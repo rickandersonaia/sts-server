@@ -2,85 +2,38 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const Words = require('../models/words');
+const Dishes = require('../models/dishes');
 
-const wordRouter = express.Router();
+const dishRouter = express.Router();
 
-wordRouter.use(bodyParser.json());
+dishRouter.use(bodyParser.json());
 
-wordRouter.route('/')
-    .get((req, res, next) => {
-        Words.find({})
-            .then((words) => {
+dishRouter.route('/')
+    .get((req,res,next) => {
+        Dishes.find({})
+            .then((dishes) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(words);
-            }, (err) => next(err))
-            .catch((err) => next(err));
-    })
-; // end wordRouter words/
-
-wordRouter.route('/new')
-    .get((req, res, next) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/html');
-        res.send('Howdy');
-    })
-    .post((req, res, next) => {
-        Words.create(req.body)
-            .then((word) =>{
-                console.log('Word created ', word);
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(word);
-            }, (err) => next(err))
-            .catch((err) => next(err));
-    })
-; // end wordRouter words/
-
-wordRouter.route('/:wordId')
-    .get((req, res, next) => {
-        Words.findById(req.params.wordId)
-            .then((word) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(word);
+                res.json(dishes);
             }, (err) => next(err))
             .catch((err) => next(err));
     })
     .post((req, res, next) => {
-        res.statusCode = 403;
-        res.end('POST operation not supported on /words/'+ req.params.wordId);
-    })
-; // end wordRouter words/
-
-wordRouter.route('/edit/:wordId')
-    .get((req, res, next) => {
-        Words.findById(req.params.wordId)
-            .then((word) => {
+        Dishes.create(req.body)
+            .then((dish) => {
+                console.log('Dish Created ', dish);
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(word);
+                res.json(dish);
             }, (err) => next(err))
             .catch((err) => next(err));
-    })
-    .post((req, res, next) => {
-        res.statusCode = 403;
-        res.end('POST operation not supported on /words/edit/'+ req.params.wordId);
     })
     .put((req, res, next) => {
-        Words.findByIdAndUpdate(req.params.wordId, {
-            $set: req.body
-        }, { new: true })
-            .then((word) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(word);
-            }, (err) => next(err))
-            .catch((err) => next(err));
+        res.statusCode = 403;
+        res.end('PUT operation not supported on /dishes');
     })
     .delete((req, res, next) => {
-        Words.findByIdAndRemove(req.params.wordId)
+        Dishes.remove({})
             .then((resp) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -88,7 +41,40 @@ wordRouter.route('/edit/:wordId')
             }, (err) => next(err))
             .catch((err) => next(err));
     });
-; // end wordRouter words/
 
+dishRouter.route('/:dishId')
+    .get((req,res,next) => {
+        Dishes.findById(req.params.dishId)
+            .then((dish) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(dish);
+            }, (err) => next(err))
+            .catch((err) => next(err));
+    })
+    .post((req, res, next) => {
+        res.statusCode = 403;
+        res.end('POST operation not supported on /dishes/'+ req.params.dishId);
+    })
+    .put((req, res, next) => {
+        Dishes.findByIdAndUpdate(req.params.dishId, {
+            $set: req.body
+        }, { new: true })
+            .then((dish) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(dish);
+            }, (err) => next(err))
+            .catch((err) => next(err));
+    })
+    .delete((req, res, next) => {
+        Dishes.findByIdAndRemove(req.params.dishId)
+            .then((resp) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(resp);
+            }, (err) => next(err))
+            .catch((err) => next(err));
+    });
 
-module.exports = wordRouter;
+module.exports = dishRouter;

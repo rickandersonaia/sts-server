@@ -4,41 +4,30 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
-const url = "mongodb://localhost:27017";
-var collection = null;
+const mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
+
+//mongoose.set('debug', true);
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 var wordRouter = require('./routes/wordRouter');
+var dishRouter = require('./routes/dishRouter');
+
+const Words = require('./models/words');
+const Dishes = require('./models/dishes');
+
+const url = "mongodb://localhost:27017/seetospell";
+const connect = mongoose.connect(url, {
+    useMongoClient: true
+});
+
+connect.then((db) => {
+    console.log("Connected correctly to server");
+}, (err) => { console.log(err)});
 
 var app = express();
-
-MongoClient.connect(url, (err, client) =>{
-    assert.equal(err, null);
-    console.log('Connected correctly to the database server');
-    const db = client.db('seetospell');
-    collection = db.collection('words');
-
-    collection.insertOne({"name": "bounce", "isfree": false, "set": "1"},
-        (err, result) =>{
-            assert.equal(err, null);
-            console.log("After Insert");
-            console.log(result.ops);
-
-            collection.find({}).toArray((err, docs) => {
-                assert.equal(err, null);
-                console.log("Found");
-                console.log(docs);
-
-                db.dropCollection('words', (err, result) => {
-                    assert.equal(err, null);
-                    client.close();
-                })
-            })
-        })
-})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -54,7 +43,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/wordss', wordRouter);
+app.use('/words', wordRouter);
+app.use('/dishes', dishRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
