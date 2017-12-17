@@ -1,24 +1,28 @@
 {
-  "name": "again",
-  "image": "/image-again.jpg",
-  "audio": "/audio/audio-again.mp3",
-  "sentence": "/sentence-again.jpg",
-  "cardset": 1,
-  "isfree": false
-},
-{
-  "name": "about",
-  "image": "/image-about.jpg",
-  "audio": "/audio/audio-about.mp3",
-  "sentence": "/sentence-about.jpg",
-  "cardset": 2,
-  "isfree": false
-},
-{
-  "name": "any",
-  "image": "/image-any.jpg",
-  "audio": "/audio/audio-any.mp3",
-  "sentence": "/sentence-any.jpg",
-  "cardset": 1,
-  "isfree": false
+  "words": [
+    {
+      "name": "again",
+      "image": "/image-again.jpg",
+      "audio": "/audio/audio-again.mp3",
+      "sentence": "/sentence-again.jpg",
+      "cardset": 1,
+      "isfree": false
+    },
+    {
+      "name": "about",
+      "image": "/image-about.jpg",
+      "audio": "/audio/audio-about.mp3",
+      "sentence": "/sentence-about.jpg",
+      "cardset": 2,
+      "isfree": false
+    },
+    {
+      "name": "any",
+      "image": "/image-any.jpg",
+      "audio": "/audio/audio-any.mp3",
+      "sentence": "/sentence-any.jpg",
+      "cardset": 1,
+      "isfree": false
+    }
+  ]
 }
