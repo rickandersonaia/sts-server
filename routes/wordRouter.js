@@ -11,7 +11,7 @@ wordRouter.use(bodyParser.json());
 wordRouter.route('/')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(cors.cors,(req, res, next) => {
-        Words.find({})
+        Words.find(req.query)
             .then((words) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -57,10 +57,10 @@ wordRouter.route('/:wordId')
     })
 ; // end wordRouter words/
 
-wordRouter.route('/edit/:wordName')
+wordRouter.route('/edit/:wordId')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(cors.cors, (req, res, next) => {
-        Words.findOne({'name': req.params.wordName})
+        Words.findOneById(req.params.wordId)
             .then((word) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
