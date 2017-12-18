@@ -57,10 +57,10 @@ wordRouter.route('/:wordId')
     })
 ; // end wordRouter words/
 
-wordRouter.route('/edit/:wordId')
+wordRouter.route('/edit/:wordName')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(cors.cors, (req, res, next) => {
-        Words.findById(req.params.wordId)
+        Words.findOne({'name': req.params.wordName})
             .then((word) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
