@@ -55,6 +55,16 @@ wordRouter.route('/:wordId')
         res.statusCode = 403;
         res.end('POST operation not supported on /words/'+ req.params.wordId);
     })
+
+    .delete(cors.corsWithOptions, (req, res, next) => {
+        Words.findByIdAndRemove(req.params.wordId)
+            .then((resp) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(resp);
+            }, (err) => next(err))
+            .catch((err) => next(err));
+    })
 ; // end wordRouter words/
 
 wordRouter.route('/edit/:wordId')
