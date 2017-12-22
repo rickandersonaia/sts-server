@@ -11,12 +11,11 @@ mongoose.Promise = require('bluebird');
 //mongoose.set('debug', true);
 
 var index = require('./routes/index');
-var users = require('./routes/users');
+var userRouter = require('./routes/userRouter');
 var wordRouter = require('./routes/wordRouter');
-var dishRouter = require('./routes/dishRouter');
 
 const Words = require('./models/words');
-const Dishes = require('./models/dishes');
+const Users = require('./models/users');
 
 const url = "mongodb://localhost:27017/seetospell";
 const connect = mongoose.connect(url, {
@@ -42,7 +41,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/users', users);
+app.use('/users', userRouter);
 app.use('/words', wordRouter);
 app.use('/dishes', dishRouter);
 
