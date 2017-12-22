@@ -41,7 +41,7 @@ var usersSchema = new Schema({
             unique: true,
         },
         setsPurchased: {
-            type: array,
+            type: Array,
             required: false,
             unique: false,
         }
@@ -51,6 +51,6 @@ var usersSchema = new Schema({
     }
 );
 
-var Users = mongoose.model('User', userSchema);
+var Users = mongoose.model('User', usersSchema);
 
 module.exports = Users;
