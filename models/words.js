@@ -10,17 +10,17 @@ var wordsSchema = new Schema({
         image: {
             type: String,
             required: false,
-            unique: true,
+            unique: false,
         },
         sentence: {
             type: String,
             required: false,
-            unique: true,
+            unique: false,
         },
         audio: {
             type: String,
             required: false,
-            unique: true,
+            unique: false,
         },
         cardset: {
             type: Number,

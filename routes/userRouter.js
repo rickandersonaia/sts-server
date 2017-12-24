@@ -26,6 +26,7 @@ userRouter.route('/new')
     .get(cors.cors,(req, res, next) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/html');
+        res.send('Howdy');
     })
     .post(cors.corsWithOptions,(req, res, next) => {
         Users.create(req.body)
@@ -35,7 +36,10 @@ userRouter.route('/new')
                 res.setHeader('Content-Type', 'application/json');
                 res.json(user);
             }, (err) => next(err))
-            .catch((err) => next(err));
+            .catch((err) => {
+                console.log('couldnt post');
+                next(err)
+            });
     })
 ; // end userRouter users/new
 
@@ -69,7 +73,7 @@ userRouter.route('/:userId')
 userRouter.route('/edit/:userId')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(cors.cors, (req, res, next) => {
-        Users.findOneById(req.params.userId)
+        Users.findById(req.params.userId)
             .then((user) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');

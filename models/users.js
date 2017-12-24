@@ -19,7 +19,7 @@ var usersSchema = new Schema({
         },
         displayName: {
             type: String,
-            required: true,
+            required: false,
             unique: false,
         },
         avatar: {
@@ -27,7 +27,7 @@ var usersSchema = new Schema({
             required: false,
             unique: false
         },
-        istutor: {
+        isTutor: {
             type: Boolean,
             default: false,
         },
@@ -38,7 +38,7 @@ var usersSchema = new Schema({
         parentId: {
             type: String,
             required: false,
-            unique: true,
+            unique: false,
         },
         setsPurchased: {
             type: Array,
