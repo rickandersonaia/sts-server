@@ -17,7 +17,7 @@ var wordRouter = require('./routes/wordRouter');
 const Words = require('./models/words');
 const Users = require('./models/users');
 
-const url = "mongodb://root:wrU0c5bhqSda@localhost/seetospell";
+const url = "mongodb://localhost:27017/seetospell";
 const connect = mongoose.connect(url, {
     useMongoClient: true
 });
@@ -38,13 +38,6 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-function auth(req, res, next){
-
-    var authHeader = req.headers.authorization;
-}
-app.use(auth);
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
