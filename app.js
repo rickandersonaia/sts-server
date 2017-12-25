@@ -17,7 +17,7 @@ var wordRouter = require('./routes/wordRouter');
 const Words = require('./models/words');
 const Users = require('./models/users');
 
-const url = "mongodb://localhost:27017/seetospell";
+const url = "mongodb://heroku_wcrrgthx:q34lkmc0geis4inhdohsgd95r3@ds163826.mlab.com:63826/heroku_wcrrgthx";
 const connect = mongoose.connect(url, {
     useMongoClient: true
 });
