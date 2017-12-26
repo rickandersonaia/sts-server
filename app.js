@@ -8,6 +8,7 @@ var session = require ('express-session');
 var FileStore = require ('session-file-store')(session);
 var passport = require('passport');
 var authenticate = require('./authenticate');
+var config = require('./config');
 
 const assert = require('assert');
 const mongoose = require('mongoose');
@@ -22,7 +23,7 @@ var wordRouter = require('./routes/wordRouter');
 const Words = require('./models/words');
 const Users = require('./models/users');
 
-const url = "mongodb://heroku_wcrrgthx:q34lkmc0geis4inhdohsgd95r3@ds163826.mlab.com:63826/heroku_wcrrgthx";
+const url = config.mongoUrl;
 const connect = mongoose.connect(url, {
     useMongoClient: true
 });
@@ -44,41 +45,14 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-//app.use(cookieParser('Meany-Lodge'));
-app.use(session({
-    name: 'session-id',
-    secret: 'Meany-Lodge',
-    saveUninitialized: false,
-    resave: false,
-    store : new FileStore({path : '../sessions'})
-}))
 
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/', index);
-
-function auth (req, res, next) {
-    console.log(req.user);
-
-    if (!req.user) {
-        var err = new Error('You are not authenticated!');
-        res.setHeader('WWW-Authenticate', 'Basic');
-        err.status = 401;
-        next(err);
-    }
-    else {
-        next();
-    }
-}
-
-app.use(auth);
-
 app.use('/users', userRouter);
 app.use('/words', wordRouter);
-
-
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('*', function (req, res, next) {
     res.sendFile(path.join(__dirname, "public/index.html"))
 });
