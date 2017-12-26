@@ -14,7 +14,7 @@ userRouter.route('/')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
-    .get(cors.cors, (req, res, next) => {
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         User.find(req.query)
             .then((users) => {
                 res.statusCode = 200;
@@ -29,12 +29,12 @@ userRouter.route('/new')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
-    .get(cors.cors, (req, res, next) => {
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/html');
         res.send('Howdy');
     })
-    .post(cors.corsWithOptions, (req, res, next) => {
+    .post(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         User.register(new User({username: req.body.username}),
             req.body.password, (err, user) => {
                 if(err) {
@@ -57,7 +57,7 @@ userRouter.route('/:userId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
-    .get(cors.cors, (req, res, next) => {
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         User.findById(req.params.userId)
             .then((user) => {
                 res.statusCode = 200;
@@ -66,12 +66,12 @@ userRouter.route('/:userId')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-    .post(cors.corsWithOptions, (req, res, next) => {
+    .post(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         res.statusCode = 403;
         res.end('POST operation not supported on /users/' + req.params.userId);
     })
 
-    .delete(cors.corsWithOptions, (req, res, next) => {
+    .delete(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         User.findByIdAndRemove(req.params.userId)
             .then((resp) => {
                 res.statusCode = 200;
@@ -86,7 +86,7 @@ userRouter.route('/edit/:userId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
-    .get(cors.cors, (req, res, next) => {
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         User.findById(req.params.userId)
             .then((user) => {
                 res.statusCode = 200;
@@ -99,7 +99,7 @@ userRouter.route('/edit/:userId')
         res.statusCode = 403;
         res.end('POST operation not supported on /users/edit/' + req.params.userId);
     })
-    .put(cors.corsWithOptions, (req, res, next) => {
+    .put(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         User.findByIdAndUpdate(req.params.userId, {
             $set: req.body
         }, {new: true})
@@ -110,7 +110,7 @@ userRouter.route('/edit/:userId')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-    .delete(cors.corsWithOptions, (req, res, next) => {
+    .delete(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         User.findByIdAndRemove(req.params.userId)
             .then((resp) => {
                 res.statusCode = 200;
