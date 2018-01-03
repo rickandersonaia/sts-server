@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-const whitelist = ['http://localhost:4200', 'http://localhost:4300'];
+const whitelist = ['http://localhost:4200', 'http://localhost:4300', 'https://seetospellapp.herokuapp.com/'];
 var corsOptionsDelegate = (req, callback) => {
     var corsOptions;
     console.log(req.header('Origin'));

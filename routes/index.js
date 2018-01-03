@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.post('/signup', (req, res, next) => {
+router.post('/signup', cors.corsWithOptions, (req, res, next) => {
     User.register(new User({username: req.body.username}),
         req.body.password, (err, user) => {
             if(err) {
@@ -31,6 +31,8 @@ router.post('/signup', (req, res, next) => {
             }
         });
 });
+
+router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); } )
 
 router.post('/login', cors.corsWithOptions, (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
@@ -56,7 +58,7 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
 });
 
 
-router.get('/logout', (req, res) => {
+router.get('/logout', cors.corsWithOptions, (req, res) => {
     if (req.session) {
         req.session.destroy();
         res.clearCookie('session-id');
