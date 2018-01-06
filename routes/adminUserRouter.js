@@ -6,11 +6,11 @@ const User = require('../models/users');
 const passport = require('passport');
 const authenticate = require('../authenticate');
 
-const userRouter = express.Router();
+const adminUserRouter = express.Router();
 
-userRouter.use(bodyParser.json());
+adminUserRouter.use(bodyParser.json());
 
-userRouter.route('/')
+adminUserRouter.route('/')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
@@ -23,9 +23,9 @@ userRouter.route('/')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-; // end userRouter users/
+; // end adminUserRouter users/
 
-userRouter.route('/new')
+adminUserRouter.route('/new')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
@@ -51,9 +51,9 @@ userRouter.route('/new')
                 }
             });
     })
-; // end userRouter users/new
+; // end adminUserRouter users/new
 
-userRouter.route('/:userId')
+adminUserRouter.route('/:userId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
@@ -80,9 +80,9 @@ userRouter.route('/:userId')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-; // end userRouter users/:userId
+; // end adminUserRouter users/:userId
 
-userRouter.route('/edit/:userId')
+adminUserRouter.route('/edit/:userId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
@@ -119,8 +119,8 @@ userRouter.route('/edit/:userId')
             }, (err) => next(err))
             .catch((err) => next(err));
     });
-; // end userRouter users/edit/:userId
+; // end adminUserRouter users/edit/:userId
 
 
 
-module.exports = userRouter;
+module.exports = adminUserRouter;

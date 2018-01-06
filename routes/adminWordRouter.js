@@ -5,11 +5,11 @@ const cors = require('./cors');
 const Words = require('../models/words');
 const authenticate = require('../authenticate');
 
-const wordRouter = express.Router();
+const adminWordRouter = express.Router();
 
-wordRouter.use(bodyParser.json());
+adminWordRouter.use(bodyParser.json());
 
-wordRouter.route('/')
+adminWordRouter.route('/')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(cors.cors,(req, res, next) => {
         Words.find(req.query)
@@ -20,9 +20,9 @@ wordRouter.route('/')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-; // end wordRouter words/
+; // end adminWordRouter words/
 
-wordRouter.route('/new')
+adminWordRouter.route('/new')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(authenticate.verifyUser, cors.cors,(req, res, next) => {
         res.statusCode = 200;
@@ -39,9 +39,9 @@ wordRouter.route('/new')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-; // end wordRouter words/
+; // end adminWordRouter words/
 
-wordRouter.route('/:wordId')
+adminWordRouter.route('/:wordId')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(authenticate.verifyUser, cors.cors,(req, res, next) => {
         Words.findById(req.params.wordId)
@@ -66,9 +66,9 @@ wordRouter.route('/:wordId')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-; // end wordRouter words/
+; // end adminWordRouter words/
 
-wordRouter.route('/edit/:wordId')
+adminWordRouter.route('/edit/:wordId')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         Words.findById(req.params.wordId)
@@ -103,7 +103,7 @@ wordRouter.route('/edit/:wordId')
             }, (err) => next(err))
             .catch((err) => next(err));
     });
-; // end wordRouter words/
+; // end adminWordRouter words/
 
 
-module.exports = wordRouter;
+module.exports = adminWordRouter;

@@ -17,8 +17,8 @@ mongoose.Promise = require('bluebird');
 //mongoose.set('debug', true);
 
 var index = require('./routes/index');
-var userRouter = require('./routes/userRouter');
-var wordRouter = require('./routes/wordRouter');
+var adminUserRouter = require('./routes/adminUserRouter');
+var adminWordRouter = require('./routes/adminWordRouter');
 
 const Words = require('./models/words');
 const Users = require('./models/users');
@@ -49,8 +49,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(passport.initialize());
 
 app.use('/', index);
-app.use('/users', userRouter);
-app.use('/words', wordRouter);
+app.use('/admin/users', adminUserRouter);
+app.use('/admin/words', adminWordRouter);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', function (req, res, next) {
