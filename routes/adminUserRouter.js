@@ -23,7 +23,7 @@ adminUserRouter.route('/')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-; // end adminUserRouter users/
+; // end adminUserRouter admin/users/
 
 adminUserRouter.route('/new')
     .options(cors.corsWithOptions, (req, res) => {
@@ -41,6 +41,7 @@ adminUserRouter.route('/new')
                     res.statusCode = 500;
                     res.setHeader('Content-Type', 'application/json');
                     res.json({err: err});
+                    console.log(req.body.password);
                 }
                 else {
                     passport.authenticate('local')(req, res, () => {
@@ -51,7 +52,7 @@ adminUserRouter.route('/new')
                 }
             });
     })
-; // end adminUserRouter users/new
+; // end adminUserRouter admin/users/new
 
 adminUserRouter.route('/:userId')
     .options(cors.corsWithOptions, (req, res) => {
@@ -80,7 +81,7 @@ adminUserRouter.route('/:userId')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-; // end adminUserRouter users/:userId
+; // end adminUserRouter admin/users/:userId
 
 adminUserRouter.route('/edit/:userId')
     .options(cors.corsWithOptions, (req, res) => {
@@ -119,7 +120,7 @@ adminUserRouter.route('/edit/:userId')
             }, (err) => next(err))
             .catch((err) => next(err));
     });
-; // end adminUserRouter users/edit/:userId
+; // end adminUserRouter admin/users/edit/:userId
 
 
 

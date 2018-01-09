@@ -7,7 +7,7 @@ var User = new Schema({
         email: {
             type: String,
             required: false,
-            unique: true,
+            unique: false,
         },
         displayName: {
             type: String,
