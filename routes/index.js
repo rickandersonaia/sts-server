@@ -24,9 +24,8 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
         }),
         req.body.password, (err, user) => {
             if(err) {
-                res.statusCode = 500;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({err: err});
+                console.log(err);
+                return next(err);
             }
             else {
                 passport.authenticate('local')(req, res, () => {
@@ -48,9 +47,10 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
         req.logIn(user, (err) => {
             if(err){ return next(err)}
             var token = authenticate.getToken({_id: req.user._id});
+            var isAdmin = req.user.isAdmin;
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json({success: true, token: token, status: 'You are successfully logged in!'});
+            res.json({success: true, token: token, status: 'You are successfully logged in!', isadmin: isAdmin});
         })
     }) (req, res, next);
 });
