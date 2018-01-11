@@ -47,7 +47,7 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
         req.logIn(user, (err) => {
             if(err){ return next(err)}
             var token = authenticate.getToken({_id: req.user._id});
-            var isAdmin = req.user.isAdmin;
+            var isAdmin = req.user.isAdmin;  // used by the login in the front end to reroute the user
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: true, token: token, status: 'You are successfully logged in!', isadmin: isAdmin});

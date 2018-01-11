@@ -17,11 +17,15 @@ mongoose.Promise = require('bluebird');
 //mongoose.set('debug', true);
 
 var index = require('./routes/index');
+// var studentRouter = require('./routes/studentRouter');
+var tutorRouter = require('./routes/tutorRouter');
 var adminUserRouter = require('./routes/adminUserRouter');
 var adminWordRouter = require('./routes/adminWordRouter');
 
 const Words = require('./models/words');
 const Users = require('./models/users');
+const Students = require('./models/students');
+const Sets = require('./models/sets')
 
 const url = config.mongoUrl;
 const connect = mongoose.connect(url, {
@@ -48,9 +52,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(passport.initialize());
 
-app.use('/', index);
+
+// app.use('/student', studentRouter);
+app.use('/tutor', tutorRouter);
 app.use('/admin/users', adminUserRouter);
 app.use('/admin/words', adminWordRouter);
+app.use('/', index);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', function (req, res, next) {
