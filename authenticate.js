@@ -36,12 +36,3 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
     }));
 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
-
-exports.verifyAdmin =  passport.authenticate('jwt', { session: false }, function(err, user, info) {
-    if (err) { return next(err); }
-    if (user.isAdmin){
-        return user;
-    }else{
-        console.log('Not Admin');
-    }
-});
