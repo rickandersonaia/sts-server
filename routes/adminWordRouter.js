@@ -11,7 +11,7 @@ adminWordRouter.use(bodyParser.json());
 
 adminWordRouter.route('/')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-    .get(cors.cors,(req, res, next) => {
+    .get(authenticate.verifyUser, cors.cors,(req, res, next) => {
         Words.find(req.query)
             .then((words) => {
                 res.statusCode = 200;

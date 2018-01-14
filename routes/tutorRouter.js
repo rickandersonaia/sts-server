@@ -16,7 +16,7 @@ tutorRouter.route('/')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
-    .get(cors.cors, (req, res, next) => {
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         User.find(req.query)
             .then((users) => {
                 res.statusCode = 200;
@@ -31,30 +31,70 @@ tutorRouter.route('/edit/:userId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
-    .get(cors.cors, (req, res, next) => {
-        User.findById(req.params.userId)
-            .then((user) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(user);
-            }, (err) => next(err))
-            .catch((err) => next(err));
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
+        console.log(req.params);
+        console.log(req.user);
+        if (req.params.userId === req.user._id) {
+            User.findById(req.params.userId)
+                .then((user) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(user);
+                }, (err) => next(err))
+                .catch((err) => next(err));
+        } else {
+            res.statusCode = 401;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(user);
+        }
+
     })
     .post(cors.corsWithOptions, (req, res, next) => {
         res.statusCode = 403;
         res.end('POST operation not supported on /users/edit/' + req.params.userId);
     })
-    .put(cors.corsWithOptions, (req, res, next) => {
-        User.findByIdAndUpdate(req.params.userId, {
-            $set: req.body
-        }, {new: true})
-            .then((user) => {
+    .put(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
+        console.log(req.params.userId);
+        console.log(req.user._id);
+        if (req.params.userId == req.user._id) {
+            console.log('they are the same')
+            User.findByIdAndUpdate(req.params.userId, {
+                $set: req.body
+            }, {new: true})
+                .then((user) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(user);
+                }, (err) => next(err))
+                .catch((err) => next(err));
+        } else {
+            console.log('they are not the same');
+            res.statusCode = 401;
+            res.setHeader('Content-Type', 'application/json');
+        }
+
+    })
+; // end tutorRouter tutor/edit/:userId
+
+tutorRouter.route('/students/new')
+    .options(cors.corsWithOptions, (req, res) => {
+        res.sendStatus(200);
+    })
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/html');
+        res.send('Howdy');
+    })
+    .post(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
+        Student.create(req.body)
+            .then((student) => {
+                console.log('Student created ', student);
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(user);
+                res.json(student);
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-; // end adminUserRouter admin/users/edit/:userId
+; // end tutorRouter tutor/students/new
 
 module.exports = tutorRouter;

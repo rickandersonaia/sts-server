@@ -24,7 +24,7 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
     (jwt_payload, done) => {
         User.findOne({_id: jwt_payload._id}, (err, user) => {
             if (err) {
-                return done(err, false);
+                return done(err, false);// done takes up to 3 parameters - err, user, info
             }
             else if (user) {
                 return done(null, user);
@@ -36,3 +36,12 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
     }));
 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
+
+exports.verifyAdmin =  passport.authenticate('jwt', { session: false }, function(err, user, info) {
+    if (err) { return next(err); }
+    if (user.isAdmin){
+        return user;
+    }else{
+        console.log('Not Admin');
+    }
+});
