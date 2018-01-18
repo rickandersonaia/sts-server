@@ -14,7 +14,8 @@ adminUserRouter.route('/')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
-    .get(cors.cors, (req, res, next) => {
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
+        if (req.user.isAdmin === true) {
             User.find(req.query)
                 .then((users) => {
                     res.statusCode = 200;
@@ -22,6 +23,12 @@ adminUserRouter.route('/')
                     res.json(users);
                 }, (err) => next(err))
                 .catch((err) => next(err));
+        } else {
+            res.statusCode = 401;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: false, message: 'Not authorized'});
+            res.end();
+        }
     })
 ; // end adminUserRouter admin/users/
 

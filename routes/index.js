@@ -10,8 +10,8 @@ var authenticate = require('../authenticate');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', function (req, res, next) {
+    res.render('index', {title: 'Express'});
 });
 
 router.post('/signup', cors.corsWithOptions, (req, res, next) => {
@@ -23,7 +23,7 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
             isTutor: req.body.isTutor
         }),
         req.body.password, (err, user) => {
-            if(err) {
+            if (err) {
                 console.log(err);
                 return next(err);
             }
@@ -38,21 +38,42 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
         });
 });
 
-router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); } )
+router.options('*', cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+})
 
 router.post('/login', cors.corsWithOptions, (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
-        if(err){ return next(err);}
+        if (err) {
+            console.log('pre-login error');
+            return next(err);
+        }
 
         req.logIn(user, (err) => {
-            if(err){ return next(err)}
+            if (err) {
+                console.log('login error');
+                return next(err)
+            }
             var token = authenticate.getToken({_id: req.user._id});
-            var isAdmin = req.user.isAdmin;  // used by the login in the front end to reroute the user
+            let currentUser = {
+                _id: user._id,
+                username: user.username,
+                displayName: user.displayName,
+                email: user.email,
+                avatar: user.avatar,
+                isAdmin: user.isAdmin,
+                isTutor: user.isTutor,
+                setsPurchased: user.setsPurchased
+            };
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json({success: true, token: token, status: 'You are successfully logged in!', isadmin: isAdmin});
+            res.json({
+                token: token,
+                user: currentUser
+            });
+            // res.json({...user._doc, token})
         })
-    }) (req, res, next);
+    })(req, res, next);
 });
 
 
@@ -85,7 +106,7 @@ router.get('/checkJWTToken', cors.corsWithOptions, (req, res) => {
             return res.json({status: 'JWT valid!', success: true, user: user});
 
         }
-    }) (req, res);
+    })(req, res);
 });
 
 module.exports = router;
