@@ -105,9 +105,9 @@ tutorRouter.route('/students/new')
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/html');
-        res.send('Howdy');
     })
     .post(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
+        console.log(req.body);
         Student.create(req.body)
             .then((student) => {
                 console.log('Student created ', student);
@@ -117,6 +117,132 @@ tutorRouter.route('/students/new')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-; // end tutorRouter tutor/students/new
+; // end tutorRouter tutor/:userId/students/new
+
+tutorRouter.route('/students/:studentId')
+    .options(cors.corsWithOptions, (req, res) => {
+        res.sendStatus(200);
+    })
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
+        Student.findById(req.params.studentId)
+            .then((student) => {
+                if (student.parentId == req.user._id || true == req.user.isAdmin) {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(student);
+                } else {
+                    res.statusCode = 401;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success: false, message: 'Not authorized'});
+                    res.end();
+                }
+
+            }, (err) => next(err))
+            .catch((err) => next(err));
+
+    })
+; // end tutorRouter tutor/:parentId/students
+
+tutorRouter.route('/students/edit/:studentId')
+    .options(cors.corsWithOptions, (req, res) => {
+        res.sendStatus(200);
+    })
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
+        Student.findById(req.params.studentId)
+            .then((student) => {
+                if (student.parentId == req.user._id || true == req.user.isAdmin) {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(student);
+                } else {
+                    res.statusCode = 401;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success: false, message: 'Not authorized'});
+                    res.end();
+                }
+
+            }, (err) => next(err))
+            .catch((err) => next(err));
+
+    })
+
+    // findByIdAndUpdate(id, update: values, options, callback) http://mongoosejs.com/docs/api.html#Query
+    .put(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
+
+        // first verify that the student actually belongs to the current user before updating
+        Student.findById(req.params.studentId)
+            .then((student) => {
+                this.parentId = student.parentId;
+                this.student = student;
+
+                // if the student belongs to the current authenticated user
+                if (this.parentId == req.user._id || true == req.user.isAdmin) {
+                    Student.findByIdAndUpdate(
+                        req.params.studentId, // id
+                        {$set: req.body}, // sets the update values
+                        {new: true} // options - new = return updated document
+                    )
+                        .then((student) => {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(student);
+                        }, (err) => next(err))
+                        .catch((err) => next(err));
+                } else {
+                    console.log('they are not the same');
+                    res.statusCode = 401;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success: false, message: 'Not authorized'});
+
+                }
+            });
+
+    })
+
+    .delete(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
+
+        // first verify that the student actually belongs to the current user before deleting
+        Student.findById(req.params.studentId)
+            .then((student) => {
+                this.parentId = student.parentId;
+                this.student = student;
+                // if the student belongs to the current authenticated user
+                if (this.parentId == req.user._id || true == req.user.isAdmin) {
+                    Student.findByIdAndRemove(req.params.studentId)
+                        .then((resp) => {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(resp);
+                        }, (err) => next(err))
+                        .catch((err) => next(err));
+                } else {
+                    console.log('they are not the same');
+                    res.statusCode = 401;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success: false, message: 'Not authorized'});
+
+                }
+            });
+
+    })
+; // end tutorRouter tutor/students/edit/:studentId
+
+tutorRouter.route('/:parentId/students')
+    .options(cors.corsWithOptions, (req, res) => {
+        res.sendStatus(200);
+    })
+    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
+        if (req.params.parentId == req.user._id || true == req.user.isAdmin) {
+            Student.find({parentId: req.params.parentId})
+                .then((students) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(students);
+                }, (err) => next(err))
+                .catch((err) => next(err));
+        }
+    })
+; // end tutorRouter tutor/:parentId/students
+
 
 module.exports = tutorRouter;

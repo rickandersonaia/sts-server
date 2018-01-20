@@ -7,7 +7,7 @@ var Student = new Schema({
 
         displayName: {
             type: String,
-            required: false,
+            required: true,
             unique: false,
         },
         avatar: {
@@ -17,7 +17,7 @@ var Student = new Schema({
         },
         parentId: {
             type: String,
-            required: false,
+            required: true,
             unique: false,
         }
     },
