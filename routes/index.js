@@ -11,7 +11,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    res.render('index', {title: 'Express'});
+    res.redirect('/home');
 });
 
 router.post('/signup', cors.corsWithOptions, (req, res, next) => {
@@ -32,7 +32,7 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.json({success: true, status: 'Registration Successful!'});
-                    res.redirect('/');
+                    res.redirect('/home');
                 });
             }
         });
