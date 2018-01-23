@@ -3,22 +3,20 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var Schema = mongoose.Schema;
 
-var Set = new Schema({
+var LearningPath = new Schema({
 
         name: {
             type: String,
             required: false,
             unique: false,
         },
-        studentId: {
-            type: String,
-            required: false,
-            unique: false
-        },
         parentId: {
             type: String,
             required: false,
             unique: false,
+        },
+        learningSteps:{
+            type: Object, // learningStep ids
         }
     },
     {
@@ -26,6 +24,6 @@ var Set = new Schema({
     }
 );
 
-Set.plugin(passportLocalMongoose);
+LearningPath.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('Set', Set);
+module.exports = mongoose.model('LearningPath', LearningPath);

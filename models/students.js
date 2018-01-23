@@ -19,7 +19,19 @@ var Student = new Schema({
             type: String,
             required: true,
             unique: false,
-        }
+        },
+        learningPathId: {
+            type: String,
+            required: true,
+            unique: false,
+        },
+        progress: [{words: [{
+                wordId: String,
+                preMastery: Object, // dates of success
+                mastery: Object, // dates of mastery
+                hasMastered: Boolean  // based on rules of mastery
+            }]
+        }]
     },
     {
         timestamps: true

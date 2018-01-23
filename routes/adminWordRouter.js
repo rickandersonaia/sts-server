@@ -14,20 +14,13 @@ adminWordRouter.route('/')
         res.sendStatus(200);
     })
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-        if (req.user.isAdmin === true) {
             Words.find(req.query)
                 .then((words) => {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.json(words);
                 }, (err) => next(err))
-                .catch((err) => next(err));
-        } else {
-            res.statusCode = 401;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({success: false, message: 'Not authorized'});
-             
-        }
+                .catch((err) => next(err))
     })
 ; // end adminWordRouter words/
 

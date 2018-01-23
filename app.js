@@ -14,7 +14,7 @@ const assert = require('assert');
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-//mongoose.set('debug', true);
+// mongoose.set('debug', true);
 
 var index = require('./routes/index');
 // var studentRouter = require('./routes/studentRouter');
@@ -25,7 +25,8 @@ var adminWordRouter = require('./routes/adminWordRouter');
 const Words = require('./models/words');
 const Users = require('./models/users');
 const Students = require('./models/students');
-const Sets = require('./models/sets')
+// const LearninSteps = require('./models/learning-steps');
+const LearninPaths = require('./models/learning-paths');
 
 const url = config.mongoUrl;
 const connect = mongoose.connect(url, {
