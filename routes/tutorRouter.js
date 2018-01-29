@@ -471,20 +471,18 @@ tutorRouter.route('/learning-steps/new')
     })
 ; // end tutorRouter tutor/learning-steps/new
 
-tutorRouter.route('/:parentId/learning-steps')
+tutorRouter.route('/learning-steps/:learningStepId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-        if (req.params.parentId == req.user._id || true == req.user.isAdmin) {
-            LearningStep.find({parentId: req.params.parentId})
+            LearningStep.find({_id: req.params.learningStepId})
                 .then((learningStep) => {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.json(learningStep);
                 }, (err) => next(err))
                 .catch((err) => next(err));
-        }
     })
 ; // end tutorRouter tutor/:parentId/learning-steps
 

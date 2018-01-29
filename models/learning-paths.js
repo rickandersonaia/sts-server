@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 
 var LearningPath = new Schema({
 
-        name: {
+        pathName: {
             type: String,
             required: false,
             unique: false,
@@ -15,9 +15,13 @@ var LearningPath = new Schema({
             required: false,
             unique: false,
         },
-        learningSteps:{
-            type: Object, // learningStep ids
-        }
+        learningSteps:[{
+            stepName: String,
+            words: [{
+                wordId: String,
+                wordName: String
+            }]
+        }]
     },
     {
         timestamps: true
