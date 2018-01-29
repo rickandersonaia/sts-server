@@ -5,6 +5,11 @@ var Schema = mongoose.Schema;
 
 var LearningStep = new Schema({
 
+        name: {
+            type: String,
+            required: false,
+            unique: false,
+        },
         words: {
             type: Object, // wordIds
             required: false,

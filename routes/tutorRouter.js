@@ -462,7 +462,7 @@ tutorRouter.route('/learning-steps/new')
         console.log(req.body);
         LearningStep.create(req.body)
             .then((learningStep) => {
-                console.log('Learning Path created ', learningStep);
+                console.log('Learning Step created ', learningStep);
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json(learningStep);
