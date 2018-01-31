@@ -22,7 +22,7 @@ var Student = new Schema({
         },
         learningPathId: {
             type: String,
-            required: true,
+            required: false,
             unique: false,
         },
         progress: [{words: [{

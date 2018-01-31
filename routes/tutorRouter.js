@@ -2,9 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('./cors');
-const User = require('../models/users')
-const Words = require('../models/words')
-const LearningStep = require('../models/learning-steps');
+const User = require('../models/users');
+const Words = require('../models/words');
 const Student = require('../models/students');
 const LearningPath = require('../models/learning-paths');
 const passport = require('passport');
@@ -256,8 +255,9 @@ tutorRouter.route('/:parentId/students')
 tutorRouter.route('/words')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
+        console.log(req.query);
     })
-    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
+    .get(cors.cors, (req, res, next) => {
         Words.find(req.query)
             .then((words) => {
                 res.statusCode = 200;
@@ -289,14 +289,25 @@ tutorRouter.route('/:userId/words')
         res.sendStatus(200);
     })
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-        Words.find()
-            .where('cardset').in(req.user.setsPurchased)
-            .then((words) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(words);
-            }, (err) => next(err))
-            .catch((err) => next(err));
+        if(req.user.setsPurchased.length > 0){
+            Words.find()
+                .where('cardset').in(req.user.setsPurchased)
+                .then((words) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(words);
+                }, (err) => next(err))
+                .catch((err) => next(err));
+        }else{
+            Words.find()
+                .where('isfree').equals(true)
+                .then((words) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(words);
+                }, (err) => next(err))
+                .catch((err) => next(err));
+        }
 
     })
 ; // end tutorRouter tutor/:tutorId/words/
@@ -448,127 +459,6 @@ tutorRouter.route('/learning-paths/edit/:learningPathId')
     })
 ; // end tutorRouter tutor/learning-paths/edit/:learningPathId
 
-// **** Learning Steps Routes *****
 
-tutorRouter.route('/learning-steps/new')
-    .options(cors.corsWithOptions, (req, res) => {
-        res.sendStatus(200);
-    })
-    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/html');
-    })
-    .post(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
-        console.log(req.body);
-        LearningStep.create(req.body)
-            .then((learningStep) => {
-                console.log('Learning Step created ', learningStep);
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(learningStep);
-            }, (err) => next(err))
-            .catch((err) => next(err));
-    })
-; // end tutorRouter tutor/learning-steps/new
-
-tutorRouter.route('/learning-steps/:learningStepId')
-    .options(cors.corsWithOptions, (req, res) => {
-        res.sendStatus(200);
-    })
-    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-            LearningStep.find({_id: req.params.learningStepId})
-                .then((learningStep) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(learningStep);
-                }, (err) => next(err))
-                .catch((err) => next(err));
-    })
-; // end tutorRouter tutor/:parentId/learning-steps
-
-
-tutorRouter.route('/learning-steps/edit/:learningStepId')
-    .options(cors.corsWithOptions, (req, res) => {
-        res.sendStatus(200);
-    })
-    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-        LearningStep.findById(req.params.learningStepId)
-            .then((learningStep) => {
-                if (learningStep.parentId == req.user._id || true == req.user.isAdmin) {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(learningStep);
-                } else {
-                    res.statusCode = 401;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json({success: false, message: 'Not authorized'});
-                    res.end();
-                }
-
-            }, (err) => next(err))
-            .catch((err) => next(err));
-
-    })
-
-    // findByIdAndUpdate(id, update: values, options, callback) http://mongoosejs.com/docs/api.html#Query
-    .put(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
-
-        // first verify that the student actually belongs to the current user before updating
-        LearningStep.findById(req.params.learningStepId)
-            .then((learningStep) => {
-                this.parentId = learningStep.parentId;
-                this.learningStep = learningStep;
-
-                // if the student belongs to the current authenticated user
-                if (this.parentId == req.user._id || true == req.user.isAdmin) {
-                    LearningStep.findByIdAndUpdate(
-                        req.params.learningStepId, // id
-                        {$set: req.body}, // sets the update values
-                        {new: true} // options - new = return updated document
-                    )
-                        .then((learningStep) => {
-                            res.statusCode = 200;
-                            res.setHeader('Content-Type', 'application/json');
-                            res.json(learningStep);
-                        }, (err) => next(err))
-                        .catch((err) => next(err));
-                } else {
-                    console.log('they are not the same');
-                    res.statusCode = 401;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json({success: false, message: 'Not authorized'});
-
-                }
-            });
-
-    })
-
-    .delete(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
-
-        // first verify that the student actually belongs to the current user before deleting
-        LearningStep.findById(req.params.learningStepId)
-            .then((learningStep) => {
-                this.parentId = learningStep.parentId;
-                this.learningStep = learningStep;
-                // if the student belongs to the current authenticated user
-                if (this.parentId == req.user._id || true == req.user.isAdmin) {
-                    LearningStep.findByIdAndRemove(req.params.learningStepId)
-                        .then((resp) => {
-                            res.statusCode = 200;
-                            res.setHeader('Content-Type', 'application/json');
-                            res.json(resp);
-                        }, (err) => next(err))
-                        .catch((err) => next(err));
-                } else {
-                    console.log('they are not the same');
-                    res.statusCode = 401;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json({success: false, message: 'Not authorized'});
-
-                }
-            });
-
-    })
-; // end tutorRouter tutor/learning-steps/edit/:learningStepId
 
 module.exports = tutorRouter;

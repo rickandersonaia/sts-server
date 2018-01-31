@@ -15,6 +15,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/signup', cors.corsWithOptions, (req, res, next) => {
+    // add email verification to this
     User.register(new User({
             username: req.body.username,
             email: req.body.email,
@@ -32,7 +33,7 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.json({success: true, status: 'Registration Successful!'});
-                    res.redirect('/home');
+                    // res.redirect('/home');
                 });
             }
         });
@@ -55,7 +56,7 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
                 return next(err)
             }
             var token = authenticate.getToken({_id: req.user._id});
-            let currentUser = {
+            let currentUser = { // create a new user object without security elements
                 _id: user._id,
                 username: user.username,
                 displayName: user.displayName,
