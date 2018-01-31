@@ -248,6 +248,17 @@ tutorRouter.route('/:parentId/students')
                 .catch((err) => next(err));
         }
     })
+    .delete(authenticate.verifyUser, cors.cors, (req, res, next) => {
+        if (req.params.parentId == req.user._id || true == req.user.isAdmin) {
+            Student.remove({parentId: req.params.parentId})
+                .then((students) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(students);
+                }, (err) => next(err))
+                .catch((err) => next(err));
+        }
+    })
 ; // end tutorRouter tutor/:parentId/students
 
 // **** Tutor Word Routes *****
@@ -364,6 +375,18 @@ tutorRouter.route('/:parentId/learning-paths')
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         if (req.params.parentId == req.user._id || true == req.user.isAdmin) {
             LearningPath.find({parentId: req.params.parentId})
+                .then((learningPath) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(learningPath);
+                }, (err) => next(err))
+                .catch((err) => next(err));
+        }
+    })
+
+    .delete(authenticate.verifyUser, cors.cors, (req, res, next) => {
+        if (req.params.parentId == req.user._id || true == req.user.isAdmin) {
+            LearningPath.remove({parentId: req.params.parentId})
                 .then((learningPath) => {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
