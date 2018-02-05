@@ -50,7 +50,15 @@ adminUserRouter.route('/new')
     })
     .post(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         if (req.user.isAdmin === true) {
-            User.register(new User({username: req.body.username}),
+            User.register(new User({
+                    username: req.body.username,
+                    email: req.body.email,
+                    displayName: req.body.displayName,
+                    avatar: req.body.avatar,
+                    isTutor: req.body.isTutor,
+                    isAdmin: req.body.isAdmin,
+                    setsPurchased: req.body.setsPurchased
+                }),
                 req.body.password, (err, user) => {
                     if (err) {
                         res.statusCode = 500;
