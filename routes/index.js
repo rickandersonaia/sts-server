@@ -110,4 +110,24 @@ router.get('/checkJWTToken', cors.corsWithOptions, (req, res) => {
     })(req, res);
 });
 
+router.route('/duplicate-check')
+    .options(cors.corsWithOptions, (req, res) => {
+        res.sendStatus(200);
+    })
+    .get(cors.cors, (req, res, next) => {
+            User.findOne(req.query)
+                .then((user) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({notunique: true, username: user.username});
+                }, (err) => next(err))
+                .catch((err) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({notunique: false});
+                });
+
+    })
+; // end adminUserRouter admin/users/
+
 module.exports = router;
