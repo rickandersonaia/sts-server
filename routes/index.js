@@ -128,6 +128,6 @@ router.route('/duplicate-check')
                 });
 
     })
-; // end adminUserRouter admin/users/
+; // end /duplicate-check
 
 module.exports = router;
